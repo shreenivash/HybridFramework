@@ -54,7 +54,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.release>21</maven.compiler.release>
 
-        <selenium.version>4.27.0</selenium.version>
+        <selenium.version>4.46.0</selenium.version>
         <appium.version>9.4.0</appium.version>
         <restassured.version>5.5.1</restassured.version>
         <testng.version>7.10.2</testng.version>
