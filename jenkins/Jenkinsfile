@@ -1,0 +1,77 @@
+pipeline {
+    agent any
+
+    options {
+        timestamps()
+        ansiColor('xterm')
+    }
+
+    parameters {
+        string(name: 'GROUPS', defaultValue: 'smoke', description: 'TestNG groups to run')
+        string(name: 'BROWSERS', defaultValue: 'chrome,firefox,edge', description: 'Comma-separated browsers')
+        choice(name: 'PARALLEL_MODE', choices: ['api_parallel', 'cross_browser', 'random_browser', 'cross_device', 'random_device', 'methods', 'classes'])
+        string(name: 'THREAD_COUNT', defaultValue: '50', description: 'Max TestNG threads')
+        string(name: 'GRID_URL', defaultValue: 'http://selenium-grid:4444', description: 'Selenium Grid URL')
+        string(name: 'DEVICES', defaultValue: 'Pixel_7,iPhone_14', description: 'Mobile device IDs')
+        string(name: 'TEST_PACKAGE', defaultValue: 'com.qa.examples', description: 'Root package to scan for @Test methods')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn -B -DskipTests install'
+            }
+        }
+
+        stage('Generate TestNG XML') {
+            steps {
+                sh """
+                    mvn -pl examples -am exec:java -Dexec.classpathScope=test \
+                      -Dexec.mainClass=com.qa.framework.engine.TestNGXmlGenerator \
+                      -Dgroups=${params.GROUPS} \
+                      -DparallelMode=${params.PARALLEL_MODE} \
+                      -Dbrowsers=${params.BROWSERS} \
+                      -Ddevices=${params.DEVICES} \
+                      -DthreadCount=${params.THREAD_COUNT} \
+                      -DtestPackage=${params.TEST_PACKAGE} \
+                      -Dtestng.runtime.xml=examples/target/testng-runtime.xml
+                """
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    def testCommand = """
+                        mvn -pl examples test \
+                          -DsuiteXmlFile=target/testng-runtime.xml \
+                          -Dgrid.url=${params.GRID_URL} \
+                          -Dheadless=false \
+                          -DthreadCount=${params.THREAD_COUNT}
+                    """.trim()
+                    if (params.PARALLEL_MODE == 'api_parallel') {
+                        timeout(time: 20, unit: 'MINUTES') {
+                            sh testCommand
+                        }
+                    } else {
+                        sh testCommand
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'mvn -pl examples allure:report || true'
+            allure includeProperties: false, jdk: 'JDK_21', results: [[path: 'examples/target/allure-results']]
+            archiveArtifacts artifacts: 'examples/target/site/allure-report/**', allowEmptyArchive: true
+        }
+    }
+}

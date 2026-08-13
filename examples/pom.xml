@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.qa.framework</groupId>
+        <artifactId>hybrid-framework</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>examples</artifactId>
+    <name>Hybrid Framework - Examples</name>
+    <description>Sample Web, Mobile, and API tests. Not published as a library.</description>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>false</maven.install.skip>
+        <suiteXmlFile>${project.basedir}/src/test/resources/testng.xml</suiteXmlFile>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.qa.framework</groupId>
+            <artifactId>web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.qa.framework</groupId>
+            <artifactId>mobile</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.qa.framework</groupId>
+            <artifactId>api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.qa.framework</groupId>
+            <artifactId>testng-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <forkedProcessTimeoutInSeconds>${forkedProcessTimeoutInSeconds}</forkedProcessTimeoutInSeconds>
+                    <systemPropertyVariables>
+                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <classpathScope>test</classpathScope>
+                    <mainClass>com.qa.framework.engine.TestNGXmlGenerator</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <configuration>
+                    <reportVersion>${allure.report.version}</reportVersion>
+                    <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
+                    <reportDirectory>${project.build.directory}/site/allure-report</reportDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>allure-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="ApiExamples" parallel="methods" thread-count="20" data-provider-thread-count="20">
+    <test name="API" parallel="methods">
+        <groups>
+            <run>
+                <include name="api"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="com.qa.examples.api"/>
+        </packages>
+    </test>
+</suite>

@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest an enhancement to the Hybrid Framework
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What gap does this fill?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [core, web, mobile, api, testng-engine, examples, jenkins, docs]
+    validations:
+      required: true

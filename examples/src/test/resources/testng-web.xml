@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="WebExamples" parallel="tests" thread-count="3">
+    <test name="Chrome">
+        <parameter name="browser" value="chrome"/>
+        <groups>
+            <run>
+                <include name="web"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="com.qa.examples.web"/>
+        </packages>
+    </test>
+</suite>

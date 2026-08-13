@@ -1,0 +1,54 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Allure
+allure-results/
+allure-report/
+**/.allure/
+
+# Generated TestNG
+**/testng-runtime.xml
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets and local overrides
+.env
+.env.*
+config-local.properties
+*.pem
+*.p12
+*.jks
+
+# Logs and temp
+*.log
+logs/
+tmp/
+temp/
+
+# Test downloads / apps
+downloads/
+*.apk
+*.ipa
+*.app/

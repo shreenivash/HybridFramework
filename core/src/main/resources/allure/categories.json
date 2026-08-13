@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Product defects",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*AssertionError.*|.*AssertionError:.*"
+  },
+  {
+    "name": "Infrastructure",
+    "matchedStatuses": ["broken", "failed"],
+    "messageRegex": ".*(WebDriverException|SessionNotCreatedException|ConnectException|SocketTimeoutException|HttpHostConnectException).*"
+  },
+  {
+    "name": "Test defects",
+    "matchedStatuses": ["broken"]
+  }
+]
