@@ -32,7 +32,7 @@ jobs:
 
       - name: Upload Allure report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: allure-report
           path: examples/target/site/allure-report
