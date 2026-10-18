@@ -1,95 +1,77 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-labelledby="railsTitle railsDesc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-labelledby="railsTitle railsDesc">
   <title id="railsTitle">One API journey, two execution rails</title>
   <desc id="railsDesc">Shared HTTP steps feed functional TestNG checks and JMeter load at fixed TPS.</desc>
-  <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ebe4d6"/>
-      <stop offset="100%" stop-color="#f3efe6"/>
-    </linearGradient>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1a1814" flood-opacity="0.12"/>
-    </filter>
-    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#8c3424"/>
-    </marker>
-  </defs>
-  <rect width="800" height="450" fill="url(#sky)"/>
+  <rect width="800" height="500" fill="#f3efe6"/>
 
-  <!-- Title band -->
-  <text x="400" y="42" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#1a1814">Same HTTP story — two runners</text>
-  <text x="400" y="62" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#5c564c">Checkout-style journey (token → resource → update)</text>
+  <text x="400" y="36" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#1a1814">Same HTTP story — two runners</text>
+  <text x="400" y="56" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#5c564c">Checkout-style journey (token → resource → update)</text>
 
-  <!-- Center: shared journey -->
-  <g filter="url(#shadow)">
-    <rect x="248" y="88" width="304" height="268" rx="10" fill="#fff" stroke="#1a1814" stroke-width="2"/>
-    <rect x="248" y="88" width="304" height="36" rx="10" fill="#1a1814"/>
-    <rect x="248" y="112" width="304" height="12" fill="#1a1814"/>
-    <text x="400" y="112" text-anchor="middle" font-family="ui-monospace, monospace" font-size="13" font-weight="600" fill="#f3efe6">API journey (ordered steps)</text>
-  </g>
+  <!-- Left: functional -->
+  <rect x="24" y="78" width="200" height="248" rx="8" fill="#fff" stroke="#2d5a3d" stroke-width="2"/>
+  <rect x="24" y="78" width="200" height="40" rx="8" fill="#2d5a3d"/>
+  <rect x="24" y="106" width="200" height="12" fill="#2d5a3d"/>
+  <text x="124" y="104" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff">Functional rail</text>
+  <text x="124" y="138" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#1a1814">TestNG + REST Assured</text>
+  <text x="124" y="156" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">parallel methods</text>
+  <text x="124" y="172" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">status · schema · JSON</text>
+  <rect x="44" y="188" width="160" height="26" rx="13" fill="#e8f2eb" stroke="#2d5a3d"/>
+  <text x="124" y="205" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#2d5a3d">CI gate · 20 min SLA</text>
+  <text x="124" y="240" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">Question:</text>
+  <text x="124" y="258" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#1a1814">Did we break the contract?</text>
+  <line x1="224" y1="200" x2="248" y2="200" stroke="#2d5a3d" stroke-width="3"/>
+  <circle cx="236" cy="200" r="5" fill="#2d5a3d"/>
 
-  <!-- Step cards -->
+  <!-- Center: journey -->
+  <rect x="248" y="78" width="304" height="300" rx="8" fill="#fff" stroke="#1a1814" stroke-width="2"/>
+  <rect x="248" y="78" width="304" height="40" rx="8" fill="#1a1814"/>
+  <rect x="248" y="106" width="304" height="12" fill="#1a1814"/>
+  <text x="400" y="104" text-anchor="middle" font-family="ui-monospace, monospace" font-size="12" font-weight="600" fill="#f3efe6">API journey (ordered steps)</text>
+
   <g font-family="ui-monospace, monospace" font-size="11">
-    <rect x="268" y="138" width="264" height="52" rx="6" fill="#f3efe6" stroke="#5c564c" stroke-width="1.5"/>
-    <text x="282" y="158" fill="#8c3424" font-weight="700">1</text>
-    <text x="298" y="158" fill="#1a1814" font-weight="600">POST</text>
-    <text x="338" y="158" fill="#1a1814">/auth/login</text>
-    <text x="282" y="176" fill="#5c564c" font-size="10">extract token → ${token}</text>
+    <rect x="268" y="132" width="264" height="48" rx="6" fill="#f3efe6" stroke="#5c564c"/>
+    <text x="280" y="152" fill="#8c3424" font-weight="700">1</text>
+    <text x="296" y="152" fill="#1a1814" font-weight="600">POST</text>
+    <text x="336" y="152" fill="#1a1814">/auth/login</text>
+    <text x="280" y="168" fill="#5c564c" font-size="10">extract token → ${token}</text>
 
-    <path d="M400 190 L400 202" stroke="#8c3424" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M400 184 v14" stroke="#8c3424" stroke-width="2"/>
+    <polygon points="400,198 396,190 404,190" fill="#8c3424"/>
 
-    <rect x="268" y="208" width="264" height="52" rx="6" fill="#f3efe6" stroke="#5c564c" stroke-width="1.5"/>
-    <text x="282" y="228" fill="#8c3424" font-weight="700">2</text>
-    <text x="298" y="228" fill="#1a1814" font-weight="600">GET</text>
-    <text x="338" y="228" fill="#1a1814">/posts/1</text>
-    <text x="282" y="246" fill="#5c564c" font-size="10">Authorization: Bearer ${token}</text>
+    <rect x="268" y="206" width="264" height="48" rx="6" fill="#f3efe6" stroke="#5c564c"/>
+    <text x="280" y="226" fill="#8c3424" font-weight="700">2</text>
+    <text x="296" y="226" fill="#1a1814" font-weight="600">GET</text>
+    <text x="336" y="226" fill="#1a1814">/posts/1</text>
+    <text x="280" y="242" fill="#5c564c" font-size="10">Authorization: Bearer ${token}</text>
 
-    <path d="M400 260 L400 272" stroke="#8c3424" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M400 258 v14" stroke="#8c3424" stroke-width="2"/>
+    <polygon points="400,272 396,264 404,264" fill="#8c3424"/>
 
-    <rect x="268" y="278" width="264" height="52" rx="6" fill="#f3efe6" stroke="#5c564c" stroke-width="1.5"/>
-    <text x="282" y="298" fill="#8c3424" font-weight="700">3</text>
-    <text x="298" y="298" fill="#1a1814" font-weight="600">PATCH</text>
-    <text x="348" y="298" fill="#1a1814">/posts/1</text>
-    <text x="282" y="316" fill="#5c564c" font-size="10">assert 200 in tests · sampler in JMX</text>
+    <rect x="268" y="280" width="264" height="48" rx="6" fill="#f3efe6" stroke="#5c564c"/>
+    <text x="280" y="300" fill="#8c3424" font-weight="700">3</text>
+    <text x="296" y="300" fill="#1a1814" font-weight="600">PATCH</text>
+    <text x="346" y="300" fill="#1a1814">/posts/1</text>
+    <text x="280" y="316" fill="#5c564c" font-size="10">assert in tests · JMX sampler</text>
   </g>
 
-  <!-- Left rail: functional -->
-  <g filter="url(#shadow)">
-    <rect x="32" y="120" width="196" height="200" rx="10" fill="#fff" stroke="#1a1814" stroke-width="2"/>
-    <rect x="32" y="120" width="196" height="44" rx="10" fill="#2d5a3d"/>
-    <rect x="32" y="152" width="196" height="12" fill="#2d5a3d"/>
-    <text x="130" y="148" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#fff">Rail 1 · Functional</text>
-  </g>
-  <text x="130" y="188" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#1a1814">TestNG + REST Assured</text>
-  <text x="130" y="206" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">parallel methods</text>
-  <text x="130" y="224" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">status · schema · JSON path</text>
-  <rect x="72" y="244" width="116" height="28" rx="14" fill="#e8f2eb" stroke="#2d5a3d" stroke-width="1.5"/>
-  <text x="130" y="262" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#2d5a3d">CI gate · 20 min SLA</text>
-  <text x="130" y="298" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c">Answers: “Did we break</text>
-  <text x="130" y="310" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c">the contract?”</text>
+  <!-- Right: load -->
+  <rect x="576" y="78" width="200" height="248" rx="8" fill="#fff" stroke="#8c3424" stroke-width="2"/>
+  <rect x="576" y="78" width="200" height="40" rx="8" fill="#8c3424"/>
+  <rect x="576" y="106" width="200" height="12" fill="#8c3424"/>
+  <text x="676" y="104" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff">Load rail</text>
+  <text x="676" y="138" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#1a1814">JMeter .jmx</text>
+  <text x="676" y="156" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">export-suite / YAML</text>
+  <text x="676" y="172" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c">Constant Throughput</text>
+  <text x="676" y="184" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c">Timer (fixed TPS)</text>
+  <rect x="596" y="196" width="160" height="26" rx="13" fill="#f5e8e4" stroke="#8c3424"/>
+  <text x="676" y="213" text-anchor="middle" font-family="ui-monospace, monospace" font-size="10" font-weight="600" fill="#8c3424">-Jtps=50</text>
+  <text x="676" y="240" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">Question:</text>
+  <text x="676" y="258" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#1a1814">Survive peak at this rate?</text>
+  <line x1="552" y1="200" x2="576" y2="200" stroke="#8c3424" stroke-width="3"/>
+  <circle cx="564" cy="200" r="5" fill="#8c3424"/>
 
-  <!-- Right rail: load -->
-  <g filter="url(#shadow)">
-    <rect x="572" y="120" width="196" height="200" rx="10" fill="#fff" stroke="#1a1814" stroke-width="2"/>
-    <rect x="572" y="120" width="196" height="44" rx="10" fill="#8c3424"/>
-    <rect x="572" y="152" width="196" height="12" fill="#8c3424"/>
-    <text x="670" y="148" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#fff">Rail 2 · Load</text>
-  </g>
-  <text x="670" y="188" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#1a1814">JMeter .jmx</text>
-  <text x="670" y="206" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">export-suite / YAML</text>
-  <text x="670" y="224" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">Constant Throughput Timer</text>
-  <rect x="612" y="244" width="116" height="28" rx="14" fill="#f5e8e4" stroke="#8c3424" stroke-width="1.5"/>
-  <text x="670" y="262" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#8c3424">-Jtps=50 fixed</text>
-  <text x="670" y="298" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c">Answers: “Can we survive</text>
-  <text x="670" y="310" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c">peak at this rate?”</text>
-
-  <!-- Connectors -->
-  <path d="M228 210 H248" stroke="#2d5a3d" stroke-width="3"/>
-  <path d="M552 210 H572" stroke="#8c3424" stroke-width="3"/>
-  <circle cx="238" cy="210" r="5" fill="#2d5a3d"/>
-  <circle cx="562" cy="210" r="5" fill="#8c3424"/>
-
-  <!-- Bottom: drift warning -->
-  <rect x="80" y="378" width="640" height="52" rx="8" fill="#fff" stroke="#5c564c" stroke-width="1.5" stroke-dasharray="6 4"/>
-  <text x="400" y="400" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#8c3424">Risk when rails diverge</text>
-  <text x="400" y="418" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">Functional suite catches API drift · load script still hits old paths until someone updates the journey</text>
+  <!-- Footer -->
+  <rect x="48" y="400" width="704" height="76" rx="8" fill="#fff" stroke="#8c3424" stroke-width="1.5"/>
+  <text x="400" y="426" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#8c3424">Risk when rails diverge</text>
+  <text x="400" y="446" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">Functional suite catches API drift early.</text>
+  <text x="400" y="462" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">Load script keeps old paths until someone updates the shared journey.</text>
 </svg>

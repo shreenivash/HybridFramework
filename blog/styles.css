@@ -135,10 +135,13 @@ figure {
 }
 
 figure img {
+  display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  max-width: 800px;
+  height: auto;
+  margin: 0 auto;
   border: 1px solid #d8d0c4;
+  background: var(--paper);
 }
 
 figcaption {

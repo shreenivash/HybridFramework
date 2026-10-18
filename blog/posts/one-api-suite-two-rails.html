@@ -27,7 +27,7 @@
       <p>The disguise is progress without a single owner for the HTTP contract.</p>
 
       <figure>
-        <img src="../images/rails.svg" alt="Diagram: shared API journey (login, GET post, PATCH) feeding TestNG functional rail and JMeter load rail at fixed TPS." width="800" height="450"/>
+        <img src="../images/rails.svg" data-fallback="https://raw.githubusercontent.com/shreenivash/HybridFramework/main/blog/images/rails.svg" alt="Diagram: shared API journey (login, GET post, PATCH) feeding TestNG functional rail and JMeter load rail at fixed TPS." width="800" height="500" decoding="async"/>
         <figcaption>One HTTP journey can feed functional checks and fixed-throughput load if the team owns a single ordered path.</figcaption>
         <button type="button" class="no-medium copy-image" data-src="../images/rails.svg">Copy image</button>
       </figure>
@@ -43,7 +43,7 @@
       <p><strong>Hand-written YAML journeys do not track the suite.</strong> A curated journey file is clear and reviewable. It is also another file to maintain when the API team ships without updating it.</p>
 
       <figure>
-        <img src="../images/throughput.svg" alt="Chart: throughput capped at 50 TPS; 200 virtual users increase queue wait, not request rate, with Constant Throughput Timer." width="800" height="450"/>
+        <img src="../images/throughput.svg" data-fallback="https://raw.githubusercontent.com/shreenivash/HybridFramework/main/blog/images/throughput.svg" alt="Chart: throughput capped at 50 TPS; 200 virtual users increase queue wait, not request rate, with Constant Throughput Timer." width="800" height="450" decoding="async"/>
         <figcaption>Fixed TPS caps throughput; adding virtual users increases wait time instead of inflating the rate.</figcaption>
         <button type="button" class="no-medium copy-image" data-src="../images/throughput.svg">Copy image</button>
       </figure>
@@ -55,7 +55,7 @@
       <p>You can author the journey three ways: YAML files, <code>@ApiLoadStep</code> annotations on existing tests (export-suite CLI), or record during a functional run then refine YAML.</p>
 
       <figure>
-        <img src="../images/annotations.svg" alt="Illustration: @ApiLoadStep on a Java API test, export-suite CLI, and generated JMeter JMX with eight steps." width="800" height="450"/>
+        <img src="../images/annotations.svg" data-fallback="https://raw.githubusercontent.com/shreenivash/HybridFramework/main/blog/images/annotations.svg" alt="Illustration: @ApiLoadStep on a Java API test, export-suite CLI, and generated JMeter JMX with eight steps." width="800" height="450" decoding="async"/>
         <figcaption>Annotations mark which functional tests participate in load export without maintaining a separate script from scratch.</figcaption>
         <button type="button" class="no-medium copy-image" data-src="../images/annotations.svg">Copy image</button>
       </figure>
@@ -91,6 +91,16 @@ mvn -q -pl perf exec:java -Dexec.args="export-suite \
     </article>
   </main>
   <script>
+    document.querySelectorAll('figure img[data-fallback]').forEach((img) => {
+      const fallback = img.getAttribute('data-fallback');
+      img.addEventListener('error', () => {
+        if (fallback && img.src !== fallback) img.src = fallback;
+      }, { once: true });
+      if (window.location.hostname === 'github.com' && fallback) {
+        img.src = fallback;
+      }
+    });
+
     const status = document.getElementById('copy-status');
     function setStatus(msg) { status.textContent = msg; }
 
