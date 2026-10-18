@@ -11,7 +11,9 @@ Three ways to bridge the gap without writing load from scratch:
 
 Fixed TPS matters: Constant Throughput Timer + JEXL so more users add wait, not fake throughput.
 
-Who owns updating the journey when the API changes—and what happens to load the week they forget?
+Architect’s take: this is a good pattern when the HTTP journey is the shared contract and two runners (functional + JMeter) stay in sync in code review. It is not a substitute for full perf engineering—soak, spikes, think time, data volume still need owners. It beats orphan JMeter scripts that drift from the API suite.
 
-Explore the open-source Hybrid Framework (Web, Mobile, API, JMeter export):
+Who owns updating the journey when the API changes?
+
+Explore the open-source Hybrid Framework:
 https://github.com/shreenivash/HybridFramework

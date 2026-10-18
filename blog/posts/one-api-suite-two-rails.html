@@ -18,7 +18,7 @@
     </div>
     <article id="story">
       <h1>One API Suite, Two Rails: Functional Tests That Feed Load</h1>
-      <p>The release pipeline is green. The API suite passed in parallel. An hour later, production is slow under traffic nobody rehearsed. The team did not miss a test. They missed a second question: did we ever stress the same journey at a fixed rate?</p>
+      <p class="lede">The release pipeline is green. The API suite passed in parallel. An hour later, production is slow under traffic nobody rehearsed. The team did not miss a test. They missed a second question: did we ever stress the <em>same journey</em> at a fixed rate?</p>
       <p>That question is old. What changed is the cost of keeping two separate worlds—functional API tests in one repo, load scripts in another—when both describe the same HTTP surface.</p>
 
       <h2>The disguise</h2>
@@ -38,9 +38,11 @@
 
       <h2>Why it breaks now</h2>
       <p>APIs are graphs, not lists. Login returns a token. The token gates the next call. Create returns an id. Update uses that id. Functional tests encode that graph with assertions. Load tests need the same graph at volume, or they measure noise.</p>
-      <p><strong>Parallel functional tests are not a journey.</strong> Running every <code>@Test</code> method in parallel finishes the suite quickly. That is a win for the release pipeline. It is not a user session. Exporting those methods as independent samplers fires unrelated endpoints at once.</p>
-      <p><strong>Record-only load drifts with test order.</strong> Recording HTTP during a functional run is seductive. Flip a flag, run the suite, emit YAML. If tests are isolated per method, you get a shuffle of calls, not a checkout flow.</p>
-      <p><strong>Hand-written YAML journeys do not track the suite.</strong> A curated journey file is clear and reviewable. It is also another file to maintain when the API team ships without updating it.</p>
+      <p>Three failure shapes show up repeatedly.</p>
+      <p><strong>Parallel functional tests are not a journey.</strong> Running every <code>@Test</code> method in parallel finishes the suite quickly. That is a win for the release pipeline. It is not a user session. Exporting those methods as independent samplers fires unrelated endpoints at once. Throughput rises. Realism drops.</p>
+      <p><strong>Record-only load drifts with test order.</strong> Recording HTTP during a functional run is seductive. Flip a flag, run the suite, emit YAML. You get truth for what ran. If tests are isolated per method, you get a shuffle of calls, not a checkout flow. Recording is excellent raw material. It is not automatically an end-to-end journey.</p>
+      <p><strong>Hand-written YAML journeys do not track the suite.</strong> A curated journey file is clear and reviewable. It is also another file to maintain. When the API team ships without updating YAML, load tests greenwash the past.</p>
+      <p>Each shape fails for the same reason: two representations of one system without a bridge.</p>
 
       <figure>
         <img src="../images/throughput.svg" data-fallback="https://raw.githubusercontent.com/shreenivash/HybridFramework/main/blog/images/throughput.svg" alt="Chart: throughput capped at 50 TPS; 200 virtual users increase queue wait, not request rate, with Constant Throughput Timer." width="800" height="450" decoding="async"/>
@@ -49,10 +51,19 @@
       </figure>
 
       <h2>Two rails on one bridge</h2>
-      <p>The Hybrid Framework treats API automation as one asset with two execution modes.</p>
-      <p><strong>Rail one — functional:</strong> TestNG, REST Assured, parallel methods, Allure evidence. This is the release gate.</p>
+      <p>The <a href="https://github.com/shreenivash/HybridFramework">Hybrid Framework</a> treats API automation as one asset with two execution modes—not one test type pretending to be both.</p>
+      <p><strong>Rail one — functional:</strong> TestNG, REST Assured, parallel methods, Allure evidence, twenty-minute SLA. This is the release gate.</p>
       <p><strong>Rail two — load:</strong> The same HTTP steps compiled to JMeter <code>.jmx</code> with a Constant Throughput Timer and JEXL so <code>-Jtps=50</code> means fifty transactions per second, not fifty times thread count. Extra users wait. They do not inflate throughput.</p>
-      <p>You can author the journey three ways: YAML files, <code>@ApiLoadStep</code> annotations on existing tests (export-suite CLI), or record during a functional run then refine YAML.</p>
+      <p>Between the rails sits the <strong>journey</strong>: ordered steps, JSON extractors, variables. You can author it three ways.</p>
+
+      <h3>YAML journeys</h3>
+      <p>Write <code>journeys/checkout.yaml</code> with explicit steps, then <code>generate</code> or <code>run</code>. Readable and reviewable—ideal for the one flow that must survive executive review. Another source of truth unless code review enforces updates.</p>
+
+      <h3><code>@ApiLoadStep</code> on existing tests</h3>
+      <p>Keep functional tests; add annotations for method, path, body, and extractors. The <code>export-suite</code> CLI scans <code>BaseApiTest</code> subclasses and builds one JMX. Lowest friction for Java-first API teams. Risk: someone edits the test body and forgets the annotation.</p>
+
+      <h3>Record during functional runs</h3>
+      <p><code>-Dapi.load.record=true</code>, run the suite, emit YAML, then <code>export-suite --recorded</code>. Fast capture of real URLs and bodies. Per-method tests still produce per-method traffic until you curate for true E2E—and redact secrets in bodies.</p>
 
       <figure>
         <img src="../images/annotations.svg" data-fallback="https://raw.githubusercontent.com/shreenivash/HybridFramework/main/blog/images/annotations.svg" alt="Illustration: @ApiLoadStep on a Java API test, export-suite CLI, and generated JMeter JMX with eight steps." width="800" height="450" decoding="async"/>
@@ -60,24 +71,78 @@
         <button type="button" class="no-medium copy-image" data-src="../images/annotations.svg">Copy image</button>
       </figure>
 
-      <h2>Pros and cons</h2>
-      <ul>
-        <li><strong>Separate JMeter scripts:</strong> High effort, high realism if maintained, poor sync with API tests.</li>
-        <li><strong>YAML journey only:</strong> Clear E2E, medium sync unless review enforces updates.</li>
-        <li><strong>@ApiLoadStep export:</strong> Low effort, stays close to Java tests; static order unless you design for E2E.</li>
-        <li><strong>Record + refine:</strong> Fast capture; needs curation for real journeys and data hygiene.</li>
-      </ul>
+      <section class="callout architect" aria-labelledby="architect-heading">
+        <h2 id="architect-heading">An architect’s read: is this a good approach?</h2>
+        <p><strong>Yes—with boundaries.</strong> Treating a shared <em>HTTP journey</em> as the integration contract, with two adapters (TestNG for correctness, JMeter for capacity), is sound systems thinking. It is the same pattern we use elsewhere: one canonical description, multiple runners. You reduce duplicate authoring without pretending functional tests <em>are</em> load tests.</p>
+        <p><strong>Where it shines.</strong> API-heavy products with Java automation already in place. Teams that lose weeks syncing Postman, JMeter, and REST Assured after every auth or routing change. Organizations that need a <em>declared</em> TPS target for regression (“can we still hold 50 TPS on checkout after this release?”) rather than ad-hoc thread ramping.</p>
+        <p><strong>Where it is not enough.</strong> Full performance engineering still needs think time, realistic data volume, cache warm-up, soak and spike profiles, and environment parity. Export compiles static steps—it does not execute your Groovy request builders or follow dynamic IDs computed only in test code. Chaos, multi-region, and non-HTTP surfaces (gRPC, messaging) stay outside this bridge unless you extend the model.</p>
+        <p><strong>The real risk is coupling without governance.</strong> If annotations rot, you have two lies instead of one. If leadership treats export as “free load testing,” you skip capacity planning. The approach is good when the journey is owned in review—same as OpenAPI or contract tests—and when load scope is intentional: one critical path, fixed throughput, evidence in CI on a schedule.</p>
+        <p><strong>Verdict:</strong> Prefer this over orphan JMeter scripts for sync and cost. Do not replace a performance program with export alone. Use it to keep functional and load <em>honest about the same path</em>, then invest saved effort in the scenarios export cannot express.</p>
+      </section>
+
+      <h2>Pros and cons at a glance</h2>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Approach</th>
+            <th>Effort</th>
+            <th>Stays in sync</th>
+            <th>Journey realism</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Separate JMeter scripts</td>
+            <td>High</td>
+            <td>Low</td>
+            <td>High if maintained</td>
+          </tr>
+          <tr>
+            <td>YAML journey only</td>
+            <td>Medium</td>
+            <td>Medium (review discipline)</td>
+            <td>High</td>
+          </tr>
+          <tr>
+            <td><code>@ApiLoadStep</code> export</td>
+            <td>Low</td>
+            <td>High if PRs enforce annotations</td>
+            <td>Medium (static order)</td>
+          </tr>
+          <tr>
+            <td>Record + refine YAML</td>
+            <td>Low initial</td>
+            <td>High per record run</td>
+            <td>Medium until curated</td>
+          </tr>
+          <tr>
+            <td>Parallel functional only</td>
+            <td>None</td>
+            <td>N/A</td>
+            <td>Not a load test</td>
+          </tr>
+        </tbody>
+      </table>
 
       <h2>Who owns what</h2>
       <p>Mechanism belongs to the framework: export CLI, JMX generation, throughput timer math, warnings when thread count cannot sustain TPS.</p>
-      <p>Outcome belongs to leadership. If pull requests that touch API tests must update annotations or journey YAML, the bridge holds.</p>
+      <p>Outcome belongs to engineering leadership. If load is an optional skunkworks file, duplication returns. If pull requests that touch API tests must update <code>@ApiLoadStep</code> or journey YAML, the bridge holds. Put it on the checklist next to schema validation.</p>
+
+      <h2>What to do Monday</h2>
+      <ol>
+        <li>Pick <strong>one</strong> critical journey—not the whole parallel suite.</li>
+        <li>Annotate or write YAML; run <code>explain</code> before <code>generate</code> so the team sees TPS, users, and samples per minute in plain language.</li>
+        <li>Run functional tests with recording once; diff the YAML against your mental model of the flow.</li>
+        <li>Schedule load from the exported JMX in CI monthly, not yearly.</li>
+      </ol>
+      <p>Evidence you can defend beats another slide that says “we have JMeter somewhere.”</p>
 
       <h2>Bottom line</h2>
       <p>You do not need two unrelated suites to answer correctness and capacity. You need one HTTP story, two runners, and a fixed throughput contract that does not lie when managers add virtual users.</p>
-      <p><em>Who on your team owns the journey file when the API changes—and what happens to load the week they forget?</em></p>
+      <p><em>Who on your team owns the journey when the API changes—and what happens to load the week they forget?</em></p>
 
       <h2>Try it</h2>
-      <p>The framework is open source on GitHub. Clone the repo, run the API examples, and export a load plan from the same suite:</p>
+      <p>The framework is open source. Clone the repo, run the API examples, and export a load plan from the same suite:</p>
       <pre class="code-block"><code>git clone https://github.com/shreenivash/HybridFramework.git
 cd HybridFramework
 mvn -B -DskipTests install
