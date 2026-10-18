@@ -7,7 +7,11 @@
 
 Unified, Maven-packaged test automation library for **Web (Selenium 4)**, **Mobile (Appium 9)**, and **API (REST Assured)** with TestNG, Selenium Grid + live VNC, maximum API parallelism (20-minute SLA), and Allure reports generated when the suite finishes.
 
-**Repository:** [github.com/shreenivash/HybridFramework](https://github.com/shreenivash/HybridFramework)
+**Get the code:** [https://github.com/shreenivash/HybridFramework](https://github.com/shreenivash/HybridFramework)
+
+```bash
+git clone https://github.com/shreenivash/HybridFramework.git
+```
 
 ## Modules
 
@@ -18,6 +22,7 @@ Unified, Maven-packaged test automation library for **Web (Selenium 4)**, **Mobi
 | `mobile` | Appium Android / iOS |
 | `api` | REST Assured client, pooling, schema validation |
 | `testng-engine` | Runtime TestNG XML (`cross_browser`, `api_parallel`, …) |
+| `perf` | YAML API journeys → JMeter JMX, fixed TPS (`explain` / `generate` / `run` CLI) |
 | `examples` | Sample tests (not published) |
 
 Consumers add only the jars they need:
@@ -57,6 +62,8 @@ Then connect to `vnc://localhost:5900` (see [docs/web-grid-vnc.md](docs/web-grid
 - [Modules](docs/modules.md)
 - [Web + Grid + VNC](docs/web-grid-vnc.md)
 - [API parallelism (20-minute SLA)](docs/api-parallel.md)
+- [Load testing: journeys → JMX (fixed TPS)](docs/perf-load.md)
+- [Blog: One API suite, two rails](blog/posts/one-api-suite-two-rails.html)
 - [Mobile](docs/mobile.md)
 - [Reporting](docs/reporting.md)
 - [Jenkins](docs/jenkins.md)

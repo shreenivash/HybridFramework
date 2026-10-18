@@ -1,0 +1,17 @@
+One API Suite, Two Rails
+
+Your functional API suite went green in twenty minutes. Production still slowed under traffic you never rehearsed at a fixed rate.
+
+The old split—REST Assured for correctness, a separate JMeter script for capacity—worked when releases were slow. Now the API is a graph (login → token → create → update), and the load script is a photocopy that lies by March.
+
+Three ways to bridge the gap without writing load from scratch:
+• YAML journeys you review like code
+• @ApiLoadStep on existing TestNG tests → export-suite to JMX
+• Record HTTP during a functional run, then refine for true E2E
+
+Fixed TPS matters: Constant Throughput Timer + JEXL so more users add wait, not fake throughput.
+
+Who owns updating the journey when the API changes—and what happens to load the week they forget?
+
+Explore the open-source Hybrid Framework (Web, Mobile, API, JMeter export):
+https://github.com/shreenivash/HybridFramework

@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-labelledby="tpsTitle tpsDesc">
+  <title id="tpsTitle">Fixed TPS with Constant Throughput Timer</title>
+  <desc id="tpsDesc">Throughput stays capped at 50 TPS; more virtual users queue and wait instead of raising the rate.</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3efe6"/>
+      <stop offset="100%" stop-color="#ebe4d6"/>
+    </linearGradient>
+    <filter id="sh2" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#1a1814" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg2)"/>
+
+  <text x="400" y="38" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#1a1814">Fixed TPS — not “more users = more throughput”</text>
+  <text x="400" y="58" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#5c564c">JMX: ${__jexl3(${__P(tps,50)} * 60)} samples/min · calcMode = all active threads</text>
+
+  <!-- Chart area -->
+  <g filter="url(#sh2)">
+    <rect x="72" y="78" width="456" height="280" rx="8" fill="#fff" stroke="#1a1814" stroke-width="2"/>
+  </g>
+  <text x="88" y="98" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#5c564c">Throughput (req/s)</text>
+
+  <!-- Axes -->
+  <line x1="100" y1="330" x2="512" y2="330" stroke="#1a1814" stroke-width="1.5"/>
+  <line x1="100" y1="110" x2="100" y2="330" stroke="#1a1814" stroke-width="1.5"/>
+  <text x="306" y="352" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">Time during load test</text>
+  <text x="86" y="224" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c" transform="rotate(-90 86 224)">TPS</text>
+
+  <!-- Y labels -->
+  <g font-family="ui-monospace, monospace" font-size="9" fill="#5c564c">
+    <text x="92" y="328" text-anchor="end">0</text>
+    <text x="92" y="278" text-anchor="end">25</text>
+    <text x="92" y="228" text-anchor="end">50</text>
+    <text x="92" y="178" text-anchor="end">75</text>
+    <text x="92" y="128" text-anchor="end">100</text>
+    <line x1="100" y1="278" x2="512" y2="278" stroke="#d8d0c4" stroke-width="1"/>
+    <line x1="100" y1="228" x2="512" y2="228" stroke="#d8d0c4" stroke-width="1"/>
+    <line x1="100" y1="178" x2="512" y2="178" stroke="#d8d0c4" stroke-width="1"/>
+    <line x1="100" y1="128" x2="512" y2="128" stroke="#d8d0c4" stroke-width="1"/>
+  </g>
+
+  <!-- Cap line 50 TPS -->
+  <line x1="100" y1="228" x2="512" y2="228" stroke="#8c3424" stroke-width="3" stroke-dasharray="10 6"/>
+  <rect x="418" y="212" width="88" height="22" rx="4" fill="#f5e8e4" stroke="#8c3424"/>
+  <text x="462" y="227" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#8c3424">cap 50 TPS</text>
+
+  <!-- Actual throughput (flat at cap) -->
+  <path d="M120 228 L200 226 L280 229 L360 227 L440 228 L492 228" fill="none" stroke="#2d5a3d" stroke-width="3"/>
+  <text x="130" y="248" font-family="system-ui, sans-serif" font-size="9" fill="#2d5a3d" font-weight="600">measured TPS (stable)</text>
+
+  <!-- Myth: uncapped growth -->
+  <path d="M120 328 L200 300 L280 260 L360 210 L440 150" fill="none" stroke="#1a1814" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.35"/>
+  <text x="380" y="145" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c" opacity="0.7">myth: threads × rate</text>
+
+  <!-- Scenario A: 50 users -->
+  <rect x="120" y="368" width="160" height="64" rx="6" fill="#e8f2eb" stroke="#2d5a3d"/>
+  <text x="200" y="388" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#2d5a3d">50 virtual users</text>
+  <text x="200" y="404" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#1a1814">threads busy · low queue</text>
+  <text x="200" y="420" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c">still ~50 TPS</text>
+
+  <!-- Scenario B: 200 users -->
+  <rect x="300" y="368" width="160" height="64" rx="6" fill="#f5e8e4" stroke="#8c3424"/>
+  <text x="380" y="388" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#8c3424">200 virtual users</text>
+  <text x="380" y="404" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#1a1814">same 50 TPS target</text>
+  <text x="380" y="420" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c">more wait · not more load</text>
+
+  <!-- Right panel: user queue -->
+  <g filter="url(#sh2)">
+    <rect x="548" y="78" width="224" height="280" rx="8" fill="#fff" stroke="#1a1814" stroke-width="2"/>
+    <rect x="548" y="78" width="224" height="32" rx="8" fill="#1a1814"/>
+    <rect x="548" y="98" width="224" height="12" fill="#1a1814"/>
+    <text x="660" y="100" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#f3efe6">Constant Throughput Timer</text>
+  </g>
+
+  <text x="660" y="132" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#5c564c">Each thread after a sampler:</text>
+
+  <!-- Funnel -->
+  <path d="M580 150 L740 150 L720 200 L600 200 Z" fill="#f3efe6" stroke="#8c3424" stroke-width="1.5"/>
+  <text x="660" y="178" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#8c3424">release at fixed rate</text>
+
+  <!-- Queue of users -->
+  <g>
+    <circle cx="600" cy="230" r="14" fill="#8c3424" opacity="0.9"/>
+    <circle cx="630" cy="230" r="14" fill="#8c3424" opacity="0.75"/>
+    <circle cx="660" cy="230" r="14" fill="#8c3424" opacity="0.6"/>
+    <circle cx="690" cy="230" r="14" fill="#8c3424" opacity="0.45"/>
+    <circle cx="720" cy="230" r="14" fill="#8c3424" opacity="0.3"/>
+    <text x="660" y="262" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c">extra users wait here</text>
+  </g>
+
+  <rect x="568" y="278" width="184" height="64" rx="6" fill="#f3efe6" stroke="#5c564c"/>
+  <text x="660" y="298" text-anchor="middle" font-family="ui-monospace, monospace" font-size="9" fill="#1a1814">-Jtps=50</text>
+  <text x="660" y="314" text-anchor="middle" font-family="ui-monospace, monospace" font-size="9" fill="#1a1814">-Jusers=200</text>
+  <text x="660" y="332" text-anchor="middle" font-family="system-ui, sans-serif" font-size="8" fill="#5c564c">planning hint: users ≥ TPS × latency</text>
+
+  <text x="480" y="388" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#1a1814" font-weight="600">Production surprise</text>
+  <text x="480" y="404" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c">Green API suite ≠ rehearsed traffic at peak</text>
+  <text x="480" y="420" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#5c564c">Rehearse the same journey at a declared TPS before release</text>
+</svg>

@@ -46,6 +46,7 @@
         <module>mobile</module>
         <module>api</module>
         <module>testng-engine</module>
+        <module>perf</module>
         <module>examples</module>
     </modules>
 
@@ -111,6 +112,11 @@
             <dependency>
                 <groupId>com.qa.framework</groupId>
                 <artifactId>testng-engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.qa.framework</groupId>
+                <artifactId>perf</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

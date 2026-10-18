@@ -1,0 +1,12 @@
+name: Sample
+baseUrl: https://example.com
+steps:
+  - name: Health
+    method: GET
+    path: /health
+  - name: Create
+    method: POST
+    path: /items
+    body: '{"id":1}'
+    extractJson:
+      itemId: $.id

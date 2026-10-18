@@ -1,6 +1,8 @@
 package com.qa.framework.api.spec;
 
 import com.qa.framework.api.config.RestAssuredManager;
+import com.qa.framework.api.load.LoadRecordingContext;
+import com.qa.framework.api.load.LoadRecordingFilter;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
@@ -22,11 +24,14 @@ public final class SpecFactory {
 
     public static RequestSpecification baseRequest() {
         RestAssuredManager.initialize();
-        return new RequestSpecBuilder()
+        RequestSpecBuilder builder = new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
-                .addFilter(new AllureRestAssured())
-                .build();
+                .addFilter(new AllureRestAssured());
+        if (LoadRecordingContext.isEnabled()) {
+            builder.addFilter(new LoadRecordingFilter());
+        }
+        return builder.build();
     }
 
     public static RequestSpecification withHeaders(Map<String, String> headers) {

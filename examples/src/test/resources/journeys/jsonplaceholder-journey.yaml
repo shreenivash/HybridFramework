@@ -1,0 +1,33 @@
+name: JSONPlaceholder E2E Journey
+description: Create a post, read it, update, patch, and delete — one iteration per virtual user loop.
+baseUrl: https://jsonplaceholder.typicode.com
+variables:
+  userId: "1"
+steps:
+  - name: Create post
+    method: POST
+    path: /posts
+    body: |
+      {"title":"load-journey","body":"perf module","userId":${userId}}
+    extractJson:
+      postId: $.id
+
+  - name: Get post
+    method: GET
+    path: /posts/${postId}
+
+  - name: Update post
+    method: PUT
+    path: /posts/${postId}
+    body: |
+      {"id":${postId},"title":"updated","body":"load","userId":${userId}}
+
+  - name: Patch post
+    method: PATCH
+    path: /posts/${postId}
+    body: |
+      {"title":"patched"}
+
+  - name: Delete post
+    method: DELETE
+    path: /posts/${postId}

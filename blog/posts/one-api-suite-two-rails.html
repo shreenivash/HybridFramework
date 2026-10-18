@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>One API Suite, Two Rails</title>
+  <link rel="stylesheet" href="../styles.css"/>
+</head>
+<body>
+  <header class="masthead">
+    <p><a href="../index.html">Practitioner notes</a> · <a href="https://github.com/shreenivash/HybridFramework">GitHub: shreenivash/HybridFramework</a></p>
+  </header>
+  <main>
+    <div class="toolbar no-medium">
+      <button type="button" id="copy-medium">Copy for Medium</button>
+      <button type="button" id="copy-linkedin">Copy for LinkedIn</button>
+      <span class="status" id="copy-status"></span>
+    </div>
+    <article id="story">
+      <h1>One API Suite, Two Rails: Functional Tests That Feed Load</h1>
+      <p>The release pipeline is green. The API suite passed in parallel. An hour later, production is slow under traffic nobody rehearsed. The team did not miss a test. They missed a second question: did we ever stress the same journey at a fixed rate?</p>
+      <p>That question is old. What changed is the cost of keeping two separate worlds—functional API tests in one repo, load scripts in another—when both describe the same HTTP surface.</p>
+
+      <h2>The disguise</h2>
+      <p>It looks like discipline to maintain a dedicated load team and a dedicated automation team. Each group has its own tools, its own heroes, its own sprint leftovers. Functional tests prove correctness. Load tests prove capacity. On paper, that split is clean.</p>
+      <p>In practice, the load script is a photocopy of the API suite that started true in January and lies by March. Endpoints move. Auth headers change. A query parameter becomes required. The functional suite catches the drift. The load suite still hits 200 on a mock until someone notices the graph flatlined.</p>
+      <p>The disguise is progress without a single owner for the HTTP contract.</p>
+
+      <figure>
+        <img src="../images/rails.svg" alt="Diagram: shared API journey (login, GET post, PATCH) feeding TestNG functional rail and JMeter load rail at fixed TPS." width="800" height="450"/>
+        <figcaption>One HTTP journey can feed functional checks and fixed-throughput load if the team owns a single ordered path.</figcaption>
+        <button type="button" class="no-medium copy-image" data-src="../images/rails.svg">Copy image</button>
+      </figure>
+
+      <h2>The old habit at human speed</h2>
+      <p>When releases were weekly and APIs were small, you could afford duplicate effort. An engineer wrote TestNG methods with REST Assured. Another exported Postman or wrote JMeter by hand. The duplication hurt, but the blast radius was contained.</p>
+      <p>The functional suite answered: does this change break a contract? The load suite answered: can we survive peak traffic? Different questions. Different artifacts. Survivable.</p>
+
+      <h2>Why it breaks now</h2>
+      <p>APIs are graphs, not lists. Login returns a token. The token gates the next call. Create returns an id. Update uses that id. Functional tests encode that graph with assertions. Load tests need the same graph at volume, or they measure noise.</p>
+      <p><strong>Parallel functional tests are not a journey.</strong> Running every <code>@Test</code> method in parallel finishes the suite quickly. That is a win for the release pipeline. It is not a user session. Exporting those methods as independent samplers fires unrelated endpoints at once.</p>
+      <p><strong>Record-only load drifts with test order.</strong> Recording HTTP during a functional run is seductive. Flip a flag, run the suite, emit YAML. If tests are isolated per method, you get a shuffle of calls, not a checkout flow.</p>
+      <p><strong>Hand-written YAML journeys do not track the suite.</strong> A curated journey file is clear and reviewable. It is also another file to maintain when the API team ships without updating it.</p>
+
+      <figure>
+        <img src="../images/throughput.svg" alt="Chart: throughput capped at 50 TPS; 200 virtual users increase queue wait, not request rate, with Constant Throughput Timer." width="800" height="450"/>
+        <figcaption>Fixed TPS caps throughput; adding virtual users increases wait time instead of inflating the rate.</figcaption>
+        <button type="button" class="no-medium copy-image" data-src="../images/throughput.svg">Copy image</button>
+      </figure>
+
+      <h2>Two rails on one bridge</h2>
+      <p>The Hybrid Framework treats API automation as one asset with two execution modes.</p>
+      <p><strong>Rail one — functional:</strong> TestNG, REST Assured, parallel methods, Allure evidence. This is the release gate.</p>
+      <p><strong>Rail two — load:</strong> The same HTTP steps compiled to JMeter <code>.jmx</code> with a Constant Throughput Timer and JEXL so <code>-Jtps=50</code> means fifty transactions per second, not fifty times thread count. Extra users wait. They do not inflate throughput.</p>
+      <p>You can author the journey three ways: YAML files, <code>@ApiLoadStep</code> annotations on existing tests (export-suite CLI), or record during a functional run then refine YAML.</p>
+
+      <figure>
+        <img src="../images/annotations.svg" alt="Illustration: @ApiLoadStep on a Java API test, export-suite CLI, and generated JMeter JMX with eight steps." width="800" height="450"/>
+        <figcaption>Annotations mark which functional tests participate in load export without maintaining a separate script from scratch.</figcaption>
+        <button type="button" class="no-medium copy-image" data-src="../images/annotations.svg">Copy image</button>
+      </figure>
+
+      <h2>Pros and cons</h2>
+      <ul>
+        <li><strong>Separate JMeter scripts:</strong> High effort, high realism if maintained, poor sync with API tests.</li>
+        <li><strong>YAML journey only:</strong> Clear E2E, medium sync unless review enforces updates.</li>
+        <li><strong>@ApiLoadStep export:</strong> Low effort, stays close to Java tests; static order unless you design for E2E.</li>
+        <li><strong>Record + refine:</strong> Fast capture; needs curation for real journeys and data hygiene.</li>
+      </ul>
+
+      <h2>Who owns what</h2>
+      <p>Mechanism belongs to the framework: export CLI, JMX generation, throughput timer math, warnings when thread count cannot sustain TPS.</p>
+      <p>Outcome belongs to leadership. If pull requests that touch API tests must update annotations or journey YAML, the bridge holds.</p>
+
+      <h2>Bottom line</h2>
+      <p>You do not need two unrelated suites to answer correctness and capacity. You need one HTTP story, two runners, and a fixed throughput contract that does not lie when managers add virtual users.</p>
+      <p><em>Who on your team owns the journey file when the API changes—and what happens to load the week they forget?</em></p>
+
+      <h2>Try it</h2>
+      <p>The framework is open source on GitHub. Clone the repo, run the API examples, and export a load plan from the same suite:</p>
+      <pre class="code-block"><code>git clone https://github.com/shreenivash/HybridFramework.git
+cd HybridFramework
+mvn -B -DskipTests install
+mvn -pl examples test
+mvn -q -pl examples,perf -am install -DskipTests
+mvn -q -pl perf exec:java -Dexec.args="export-suite \
+  --testPackage com.qa.examples.api --groups api \
+  --baseUrl https://jsonplaceholder.typicode.com \
+  --out target/api-suite.jmx --tps 50 --users 200"</code></pre>
+      <p>Docs: <a href="https://github.com/shreenivash/HybridFramework/blob/main/docs/perf-load.md">Load testing (journeys → JMX)</a> · <a href="https://github.com/shreenivash/HybridFramework/blob/main/docs/getting-started.md">Getting started</a></p>
+    </article>
+  </main>
+  <script>
+    const status = document.getElementById('copy-status');
+    function setStatus(msg) { status.textContent = msg; }
+
+    document.getElementById('copy-linkedin').addEventListener('click', async () => {
+      const res = await fetch('../linkedin-post.txt');
+      const text = await res.text();
+      await navigator.clipboard.writeText(text);
+      setStatus('LinkedIn post copied.');
+    });
+
+    document.getElementById('copy-medium').addEventListener('click', async () => {
+      const story = document.getElementById('story').cloneNode(true);
+      story.querySelectorAll('.no-medium').forEach(el => el.remove());
+      story.querySelectorAll('img').forEach(img => {
+        const u = new URL(img.getAttribute('src'), window.location.href);
+        img.setAttribute('src', u.href);
+      });
+      const html = story.innerHTML;
+      const plain = story.innerText;
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': new Blob([html], { type: 'text/html' }),
+          'text/plain': new Blob([plain], { type: 'text/plain' })
+        })
+      ]);
+      setStatus('Medium story copied. Paste into a new story; move the title if needed.');
+    });
+
+    function imagePng(img) {
+      return new Promise((resolve, reject) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        if (!canvas.width) { reject(new Error('Image not ready')); return; }
+        canvas.getContext('2d').drawImage(img, 0, 0);
+        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('no blob')), 'image/png');
+      });
+    }
+
+    document.querySelectorAll('.copy-image').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const img = new Image();
+        img.src = new URL(btn.dataset.src, window.location.href).href;
+        await img.decode();
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': imagePng(img) })]);
+        setStatus('Image copied as PNG.');
+      });
+    });
+  </script>
+</body>
+</html>

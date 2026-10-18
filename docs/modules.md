@@ -9,6 +9,7 @@ Each Maven module produces a jar (`examples` is not published).
 | `com.qa.framework:mobile` | core, Appium Java Client 9 | Android / iOS |
 | `com.qa.framework:api` | core, REST Assured | HTTP APIs |
 | `com.qa.framework:testng-engine` | core, ClassGraph | Runtime suite generation |
+| `com.qa.framework:perf` | core, Jackson YAML | JMeter JMX from API journey YAML, fixed-TPS CLI |
 
 ## Consumer POM
 
